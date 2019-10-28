@@ -16,7 +16,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--ioapic", "on"]
   end
+  # CentOS 6
+  config.vm.define "centos6" do |centos6|
+    centos6.vm.hostname = "centos6test"
+    if not TEST_MODE
+      centos6.vm.box = "geerlingguy/centos6"
+    else
+      centos6.vm.box = LOCAL_BOX_DIRECTORY + PROVIDER_UNDER_TEST + "-centos6.box"
+    end
+    centos6.vm.network :private_network, ip: NETWORK_PRIVATE_IP_PREFIX + "5"
 
+    # Ansible.
+    centos6.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbook.yml"
+      ansible.extra_vars = {
+        upgrade: ENV['VM_UPGRADE_PKG']
+      }
+    end
+  end
   # CentOS 7
   config.vm.define "centos7" do |centos7|
     centos7.vm.hostname = "centos7test"
