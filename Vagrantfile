@@ -35,4 +35,22 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       }
     end
   end
+  # CentOS 8
+  config.vm.define "centos8" do |centos8|
+    centos8.vm.hostname = "centos8test"
+    if not TEST_MODE
+      centos8.vm.box = "geerlingguy/centos8"
+    else
+      centos8.vm.box = LOCAL_BOX_DIRECTORY + PROVIDER_UNDER_TEST + "-centos8.box"
+    end
+    centos8.vm.network :private_network, ip: NETWORK_PRIVATE_IP_PREFIX + "5"
+
+    # Ansible.
+    centos8.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbook.yml"
+      ansible.extra_vars = {
+        upgrade: ENV['VM_UPGRADE_PKG']
+      }
+    end
+  end
 end

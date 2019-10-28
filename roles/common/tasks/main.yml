@@ -15,6 +15,7 @@
   shell: ifup enp0s8
   args:
     executable: /bin/bash
+  when: ansible_distribution_version != '8.0'
 
 - name: Install EPEL repo
   yum:
