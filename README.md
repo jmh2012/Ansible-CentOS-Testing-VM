@@ -1,4 +1,4 @@
-# CentOS 7 Testing VM Ansible Playbook
+# CentOS 6/7/8 Testing VM Ansible Playbook
 
 Playbook and Vagrantfile to set up a CentOS 7 VM with tools and default configurations I like to have.
 
@@ -9,10 +9,14 @@ Vagrant provider is VirtualBox. A host-only adapter (enp0s8) is also configured 
 Just 
 
 ```
-# Provision VM without most recent packages.
+# Provision CentOS VM without most recent packages.
+vagnrat up centos6
+vagrant up centos7
+vagrant up centos8
+# Rovision all centos versions
 vagrant up
 # Or upgrade all packages during provisioning.
-VM_UPGRADE_PKG=true vagrant up
+VM_UPGRADE_PKG=true vagrant up <centos version>
 ```
 to run.
 
