@@ -1,0 +1,64 @@
+---
+
+- name: Disable SELinux by default
+  selinux:
+    state: permissive
+    policy: targeted
+
+- name: Disable firewalld by default
+  service:
+    name: firewalld
+    state: stopped
+    enabled: false
+
+- name: Ensure interface on host-only adapter is up
+  shell: ifup enp0s8
+  args:
+    executable: /bin/bash
+
+- name: Install EPEL repo
+  yum:
+    name: epel-release
+    state: present
+
+- name: Upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+  when: upgrade
+
+- name: Install my packages
+  yum:
+    name: "{{ packages }}"
+    state: present  
+
+- name: updatedb for mlocate
+  shell: updatedb
+  args:
+    executable: /bin/bash
+
+- name: Ensure ssh server is running.
+  service:
+    name: sshd
+    state: started
+    enabled: true
+
+- name: Ensure wheel group exists
+  group:
+    name: wheel
+    state: present
+
+- name: Ensure wheel group can sudo
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) ALL'
+
+- name: Setup user account {{ username }}
+  user:
+    name: "{{ username }}"
+    state: present
+    create_home: yes
+    groups: wheel
+    password: "{{ password }}"
+
