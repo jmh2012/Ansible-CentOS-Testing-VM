@@ -64,6 +64,7 @@
     line: '%wheel ALL=(ALL) ALL'
 
 - name: Setup user account {{ username }}
+  ignore_errors: true
   user:
     name: "{{ username }}"
     state: present
