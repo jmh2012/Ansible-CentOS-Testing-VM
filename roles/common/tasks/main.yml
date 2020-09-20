@@ -10,12 +10,20 @@
     name: firewalld
     state: stopped
     enabled: false
+  when: ansible_distribution_version|float >= 7
+
+- name: Disable iptables by default
+  service:
+    name: iptables
+    state: stopped
+    enabled: false
+  when: ansible_distribution_version|float < 7
 
 - name: Ensure interface on host-only adapter is up
+  ignore_errors: true
   shell: ifup enp0s8
   args:
     executable: /bin/bash
-  when: ansible_distribution_version != '8.0'
 
 - name: Install EPEL repo
   yum:
